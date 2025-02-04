@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="enter city name" spellcheck="false" id="city_name">
+            <button id="search"><img src="images/search.png" ></button>
+        </div>
+        <div class="error">
+            <h1>ERROR!</h1>
+        </div>
+        <div class="weather">
+            <img src="images/rain.png" class="weather-icon">
+            <h1 class="temp">22°c</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png">
+                    <div>
+                        <p class="wind">15 km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        const but=document.getElementById("search");
+        var city_name="bangalore";
+        //var fg=document.getElementById("weather");
+        var weatherIcon=document.querySelector(".weather-icon");
+        var apiUrl= `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city_name}`;
+        but.addEventListener('click', async=>{
+            city_name=document.getElementById('city_name').value;
+            //console.log(city_name);
+            checkWeather(city_name);
+            //fg.style.display=flex;
+        })
+        const apiKey= "8acf8c31528f5071238d3a8eef51591c";
+        
+        async function checkWeather(city_name){
+            apiUrl= `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city_name}`;
+            const response = await fetch(apiUrl + `&appid=${apiKey}`);
+            var data= await response.json();
+            if(response.status==404)
+        {
+            document.querySelector(".error").style.display="block";
+            document.querySelector(".weather").style.display="none";
+        }
+        else{
+            document.querySelector(".city").innerHTML=data.name;
+            document.querySelector(".temp").innerHTML=Math.round(data.main.temp)+"°c";
+            document.querySelector(".humidity").innerHTML=data.main.humidity+"%";
+            document.querySelector(".wind").innerHTML=data.wind.speed+"km/h";
+            var condition=data.weather[0].main;
+            //console.log(condition);
+            document.querySelector(".weather-icon").src=`images/${condition}.png`;
+            document.querySelector(".weather").style.display="block";
+            document.querySelector(".error").style.display="none";
+        }
+
+            
+        }
+    </script>
+</body>
+</html>
